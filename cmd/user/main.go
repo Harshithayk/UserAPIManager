@@ -6,10 +6,10 @@ import (
 	"todo/pck/dbconnection"
 	"todo/pck/handlers"
 	"todo/pck/middleware"
+	"todo/pck/redis"
 	"todo/pck/repository"
 	"todo/pck/server"
 	"todo/pck/service"
-	"todo/redis"
 
 	"github.com/rs/zerolog/log"
 )
