@@ -1,7 +1,5 @@
 package auth
 
-import "github.com/golang-jwt/jwt/v5"
-
 const SingNature = "HiiIamHvingTheBadFrindTHATisNikiTha"
 
 type Auth struct {
@@ -9,8 +7,8 @@ type Auth struct {
 }
 
 type Authenticate interface {
-	GenerateJWT(email string) (string, error)
-	ValidateToken(token string) (jwt.RegisteredClaims, error)
+	GenerateJWT(email string,relo string) (string, error)
+	ValidateToken(token string) (Claims, error)
 }
 
 func NewAuth(SingNature string) (*Auth, error) {

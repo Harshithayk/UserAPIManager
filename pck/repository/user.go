@@ -16,22 +16,21 @@ func (r *Repo) UserSigup(ctx context.Context, user models.Users) (models.Users, 
 	return user, nil
 }
 
-func (r *Repo) UserLogin(ctx context.Context, userlog models.Login) (userpass string, err error) {
-	if err = r.repo.WithContext(ctx).Table("users").Select("*").Where("email= ?", userlog.Email).Find(&userlog).Error; err != nil {
+func (r *Repo) UserLogin(ctx context.Context, userlog models.Login) (user models.UserLogin, err error) {
+	if err = r.repo.WithContext(ctx).Table("users").Select("*").Where("email= ?", userlog.Email).Find(&user).Error; err != nil {
 		log.Error().Err(errors.New("CAN OUT FETCH THE DATA"))
-		return "", err
+		return models.UserLogin{}, err
 	}
-	return userlog.Password, nil
+	return user, nil
 }
 
-
-func(r *Repo) FindByEmail(ctx context.Context,email string)(models.Users,error){
+func (r *Repo) FindByEmail(ctx context.Context, email string) (models.Users, error) {
 	var users models.Users
- if err := r.repo.WithContext(ctx).Table("users").Select("*").Where("email = ?",email).Find(&users).Error;err != nil{
-	log.Error().Err(errors.New("CAN OUT FETCH THE DATA"))
-	return models.Users{}, err
-  }
-  return users,nil
+	if err := r.repo.WithContext(ctx).Table("users").Select("*").Where("email = ?", email).Find(&users).Error; err != nil {
+		log.Error().Err(errors.New("CAN OUT FETCH THE DATA"))
+		return models.Users{}, err
+	}
+	return users, nil
 }
 
 func (r *Repo) FetchUserrepo(ctx context.Context) ([]models.FetchUser, error) {

@@ -5,11 +5,13 @@ import (
 	auth "todo/Auth"
 	"todo/pck/models"
 	"todo/pck/repository"
+	"todo/redis"
 )
 
 type Service struct {
 	RepoUser repository.UserRepository
 	Auth     auth.Authenticate
+	rdb      redis.UserRedies
 }
 type UserService interface {
 	UserSignup(ctx context.Context, userSigup models.UsersModel) (models.UserResponse, error)
@@ -20,9 +22,10 @@ type UserService interface {
 	DeleteById(ctx context.Context, FetchID int) (models.UserResponse, error)
 }
 
-func NewService(RepoUser repository.UserRepository, auth auth.Authenticate) (*Service, error) {
+func NewService(RepoUser repository.UserRepository, auth auth.Authenticate,rdb redis.UserRedies) (*Service, error) {
 	return &Service{
 		RepoUser: RepoUser,
 		Auth:     auth,
+		rdb: rdb,
 	}, nil
 }

@@ -13,7 +13,7 @@ type Repo struct {
 
 type UserRepository interface {
 	UserSigup(ctx context.Context, user models.Users) (models.Users, error)
-	UserLogin(ctx context.Context, userlog models.Login) (string, error)
+	UserLogin(ctx context.Context, userlog models.Login) (models.UserLogin, error)
 	FetchUserrepo(ctx context.Context) ([]models.FetchUser, error)
 	FetchById(ctx context.Context, id models.FetchByID) (models.FetchUser, error)
 	UpdateUserById(ctx context.Context, update models.FetchUser) (models.UserResponse, error)

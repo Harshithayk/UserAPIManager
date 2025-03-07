@@ -23,7 +23,7 @@ func Dbconnect() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&models.Users{})
+	err = db.AutoMigrate(&models.Users{}, &models.FetchByID{}, &models.FetchUser{}, models.Login{}, models.UsersModel{})
 	if err != nil {
 		return nil, err
 	}

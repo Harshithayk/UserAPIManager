@@ -105,17 +105,9 @@ func (h Handlers) UpdateUserById(c *gin.Context) {
 }
 
 func (h Handlers) DeleteById(c *gin.Context) {
-	//	var FetchByID models.FetchByID
 	ctx := c.Request.Context()
 	id := c.Param("id")
 	id1, _ := strconv.Atoi(id)
-	// err := json.NewDecoder(c.Request.Body).Decode(&FetchByID)
-	// if err != nil {
-	//     c.AbortWithStatusJSON(http.StatusBadRequest,gin.H{
-	// 		"Message": "please provide the valid request",
-	// 	})
-	// 	return
-	// }
 	resp, err := h.Ser.DeleteById(ctx, id1)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{

@@ -3,8 +3,11 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"todo/pck/models"
 	"todo/pck/utils"
+
+	"github.com/redis/go-redis/v9"
 )
 
 func (s Service) UserSignup(ctx context.Context, userSigup models.UsersModel) (models.UserResponse, error) {
@@ -44,11 +47,6 @@ func (s Service) UserSignup(ctx context.Context, userSigup models.UsersModel) (m
 
 func (s Service) UserLogin(ctx context.Context, userLogin models.UserLogin) (models.LoginResponse, error) {
 
-	Token, err := s.Auth.GenerateJWT(userLogin.Email)
-	if err != nil {
-		return models.LoginResponse{}, err
-	}
-
 	userLog := models.Login{
 		Email:    userLogin.Email,
 		Password: userLogin.Password,
@@ -57,11 +55,29 @@ func (s Service) UserLogin(ctx context.Context, userLogin models.UserLogin) (mod
 	if err != nil {
 		return models.LoginResponse{}, err
 	}
-	err = utils.ComparePaswords(userLogin.Password, paw)
+
+	Token, err := s.Auth.GenerateJWT(userLogin.Email,paw.Role)
+	if err != nil {
+		return models.LoginResponse{}, err
+	}
+
+	err = utils.ComparePaswords(userLogin.Password, paw.Password)
 	if err != nil {
 		return models.LoginResponse{
 			Message: "please enter the valid password ",
 		}, err
+	}
+	
+	err = s.rdb.AddTokenToCache(ctx, paw.Email, Token)
+	if err != nil {
+		return models.LoginResponse{}, err
+	}
+	cacheToken, err := s.rdb.GetTokenFromCache(ctx, paw.Email)
+	fmt.Println("token from cache", cacheToken)
+	if err == redis.Nil {
+		cacheToken = Token
+	} else if err != nil {
+		return models.LoginResponse{}, err
 	}
 
 	return models.LoginResponse{

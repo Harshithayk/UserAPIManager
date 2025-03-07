@@ -11,6 +11,7 @@ type Users struct {
 	Email       string `gorm:"column:email; unique" json:"email"`
 	PhoneNumber string `gorm:"column:phone_number;" json:"phone_number"`
 	Password    string `gorm:"column:password" json:"password"`
+	Role        string `gorm:"default:user"`
 }
 
 type UsersModel struct {
@@ -19,6 +20,7 @@ type UsersModel struct {
 	Email       string `json:"email" validate:"required,email"`
 	PhoneNumber string `json:"phone_Number" validate:"required"`
 	Password    string `json:"password" validate:"min=8,max=15"`
+	Role        string `json:"role"`
 }
 
 type UserResponse struct {
@@ -30,11 +32,13 @@ type Login struct {
 	gorm.Model
 	Email    string `gorm:"column:email; unique" json:"email"`
 	Password string `gorm:"column:password" json:"password"`
+	Role     string `gorm:"default:user"`
 }
 
 type UserLogin struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Role     string `json:"role"`
 }
 
 type LoginResponse struct {

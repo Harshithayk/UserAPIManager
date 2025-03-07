@@ -10,11 +10,13 @@ import (
 
 type Claims struct {
 	email string
+	role  string
 	jwt.RegisteredClaims
 }
 
-func (a *Auth) GenerateJWT(email string) (string, error) {
+func (a *Auth) GenerateJWT(email string, role string) (string, error) {
 	claims := Claims{
+		role:  role,
 		email: email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 1)),
@@ -30,17 +32,17 @@ func (a *Auth) GenerateJWT(email string) (string, error) {
 	return tokenString, nil
 }
 
-func (a *Auth) ValidateToken(token string) (jwt.RegisteredClaims, error) {
-	var c jwt.RegisteredClaims
+func (a *Auth) ValidateToken(token string) (Claims, error) {
+	var c Claims
 	tkn, err := jwt.ParseWithClaims(token, &c, func(t *jwt.Token) (interface{}, error) {
 		return []byte(a.SingNature), nil
 	})
 	if err != nil {
-		return jwt.RegisteredClaims{}, fmt.Errorf("error in parsing the token : %w", err)
+		return Claims{}, fmt.Errorf("error in parsing the token : %w", err)
 	}
 
 	if !tkn.Valid {
-		return jwt.RegisteredClaims{}, errors.New("token in not valid")
+		return Claims{}, errors.New("token in not valid")
 	}
 
 	return c, nil
